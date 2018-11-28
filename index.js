@@ -2,6 +2,7 @@ $("button").click(function(event){
     event.preventDefault();
     var inputTextVal = $("#inputText").val();
     console.log(inputTextVal);
+    //AWS configurations required to use AWS Polly
     AWS.config.region = 'eu-central-1'; // Region
     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
         IdentityPoolId: 'eu-central-1:bcb9f252-99e8-480d-be8b-28727fb1032b',
@@ -23,6 +24,7 @@ $("button").click(function(event){
             console.log('saving mp3');
             console.log('AWS POLLY RESPONSE:', data);
             
+            //This takes the response object saves it as a blob and plays it as audio by selecting the audio HTML element.
             var uInt8Array = new Uint8Array(data.AudioStream);
             var arrayBuffer = uInt8Array.buffer;
             var blob = new Blob([arrayBuffer]);
@@ -34,7 +36,8 @@ $("button").click(function(event){
 
         }
     }
-
+    
+    //This is the AWS Polly request
     if($("#inputText").val() != "") {
         
         console.log("starting GET request");
