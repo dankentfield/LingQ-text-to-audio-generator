@@ -12,6 +12,8 @@ $("button").click(function(event){
     let params = {
         "LanguageCode": "ru-RU",
         "OutputFormat": "mp3",
+        "OutputS3BucketName": "lingqaudio",
+        "SnsTopicArn": "arn:aws:sns:eu-central-1:904560068957:lingq-audio-status",
         "Text": inputTextVal,
         "TextType": "text",
         "VoiceId": "Maxim" 
@@ -23,16 +25,22 @@ $("button").click(function(event){
         } else {
             console.log('saving mp3');
             console.log('AWS POLLY RESPONSE:', data);
+            $('p.text-response-url').text(data.SynthesisTask.OutputUri);
             
-            //This takes the response object saves it as a blob and plays it as audio by selecting the audio HTML element.
-            var uInt8Array = new Uint8Array(data.AudioStream);
-            var arrayBuffer = uInt8Array.buffer;
-            var blob = new Blob([arrayBuffer]);
-            var audio = $('audio');
-            var url = URL.createObjectURL(blob);
-            $('audio').attr("controls", "controls");
-            audio[0].src = url;
-            audio[0].play();
+
+            
+            //Timeout function is used as AWS SNS isn't setup yet, 
+            //a message needs to be sent to allow the src attr of the <audio> tag to be updated to create an async response.
+            setTimeout(function(){
+                var audio = $('audio');
+                var url = data.SynthesisTask.OutputUri;
+                $('audio').attr("controls", "controls");
+                audio[0].src = url;
+                audio[0].play();
+            },15000);
+            
+           
+            
 
         }
     }
@@ -41,10 +49,12 @@ $("button").click(function(event){
     if($("#inputText").val() != "") {
         
         console.log("starting GET request");
-        polly.synthesizeSpeech(params, synthCB);
+        polly.startSpeechSynthesisTask(params, synthCB);
         console.log("End of GET request");
     } else return;
 });
+
+
 
 
 
