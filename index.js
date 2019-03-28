@@ -2,10 +2,11 @@ $("button").click(function(event){
     event.preventDefault();
     var inputTextVal = $("#inputText").val();
     console.log(inputTextVal);
+    
     //AWS configurations required to use AWS Polly
     AWS.config.region = 'eu-central-1'; // Region
     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: 'eu-central-1:bcb9f252-99e8-480d-be8b-28727fb1032b',
+        IdentityPoolId: 'INSERT POOL ID HERE',
     });
     var polly = new AWS.Polly({apiVersion: '2016-06-10'});
     
@@ -13,7 +14,7 @@ $("button").click(function(event){
         "LanguageCode": "ru-RU",
         "OutputFormat": "mp3",
         "OutputS3BucketName": "lingqaudio",
-        "SnsTopicArn": "arn:aws:sns:eu-central-1:904560068957:lingq-audio-status",
+        "SnsTopicArn": "SNS TOPIC ARN",
         "Text": inputTextVal,
         "TextType": "text",
         "VoiceId": "Maxim" 
